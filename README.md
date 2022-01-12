@@ -7,6 +7,13 @@ PyQt5 >= 5.8
 ## Setup
 ```pip3 install git+https://github.com/yjg30737/pyqt-polygon-window.git --upgrade```
 
+## Included packages
+<a href="https://github.com/yjg30737/pyqt-resource-helper.git">pyqt-resource-helper</a>
+
+## Feature
+* ```setBorderWidth(width: int)```
+* ```setCornerLength(corner_length: int)```
+
 ## Example
 Code Sample
 ```python
