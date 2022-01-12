@@ -1,3 +1,5 @@
+import random
+
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPainter, QColor, QPen, QPolygon, QPainterPath, QBrush
 from PyQt5.QtWidgets import QMainWindow, QApplication, QGridLayout, QTextEdit, QWidget, QVBoxLayout, QHBoxLayout, \
@@ -8,8 +10,9 @@ from pyqt_resource_helper import PyQtResourceHelper
 class PolygonWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.__border_width = 3
+        self.__corner_length = 20
         self.__offset = 0
-        self.__cut_len = 20
         self.__moving = False
         self.__initUi()
 
@@ -29,7 +32,7 @@ class PolygonWindow(QMainWindow):
 
         menuBar = QWidget()
         menuBar.setLayout(lay)
-        menuBar.setFixedHeight(self.__cut_len) # menu bar height is supposed to be as same as cut length.
+        menuBar.setFixedHeight(self.__corner_length)  # menu bar height is supposed to be as same as corner length.
 
         lay = QVBoxLayout()
         lay.setAlignment(Qt.AlignTop)
@@ -46,7 +49,7 @@ class PolygonWindow(QMainWindow):
     def paintEvent(self, e):
         painter = QPainter(self)
         brush = QBrush(QColor(50, 50, 50, 255))
-        pen = QPen(QColor(Qt.darkGray), 3)
+        pen = QPen(QColor(Qt.darkGray), self.__border_width)
         painter.setPen(pen)
         painter.setBrush(brush)
 
@@ -59,8 +62,8 @@ class PolygonWindow(QMainWindow):
 
         # top left corner cut polygon
         p1 = QPolygon(self.rect(), True)
-        p1.setPoint(0, QPoint(self.rect().topLeft().x(), self.rect().topLeft().y()+self.__cut_len))
-        p1.setPoint(1, QPoint(self.rect().topLeft().x()+self.__cut_len, self.rect().topLeft().y()))
+        p1.setPoint(0, QPoint(self.rect().topLeft().x(), self.rect().topLeft().y()+self.__corner_length))
+        p1.setPoint(1, QPoint(self.rect().topLeft().x()+self.__corner_length, self.rect().topLeft().y()))
         p1.setPoint(2, self.rect().topRight())
         p1.setPoint(3, self.rect().bottomRight())
         p1.setPoint(4, self.rect().bottomLeft())
@@ -69,8 +72,8 @@ class PolygonWindow(QMainWindow):
         p2 = QPolygon(self.rect(), True)
         p2.setPoint(0, self.rect().topLeft())
         p2.setPoint(1, self.rect().topRight())
-        p2.setPoint(2, QPoint(self.rect().bottomRight().x(), self.rect().bottomRight().y()-self.__cut_len))
-        p2.setPoint(3, QPoint(self.rect().bottomRight().x()-self.__cut_len, self.rect().bottomRight().y()))
+        p2.setPoint(2, QPoint(self.rect().bottomRight().x(), self.rect().bottomRight().y()-self.__corner_length))
+        p2.setPoint(3, QPoint(self.rect().bottomRight().x()-self.__corner_length, self.rect().bottomRight().y()))
         p2.setPoint(4, self.rect().bottomLeft())
 
         # get the intersection
@@ -93,3 +96,11 @@ class PolygonWindow(QMainWindow):
     def mouseReleaseEvent(self, e):
         self.__moving = False
         return super().mouseReleaseEvent(e)
+
+    def setBorderWidth(self, width: int):
+        self.__border_width = width
+        self.repaint()
+
+    def setCornerLength(self, corner_length: int):
+        self.__corner_length = corner_length
+        self.repaint()
